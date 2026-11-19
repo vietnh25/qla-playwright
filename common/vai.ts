@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { VAI, Vai, authFileVai, credentialsVai } from '../account';
 import { ghiNhanToast } from './antd';
-import { loginSSO } from './login';
+import { boMocThaoTacCu, laTrangDangNhap, loginSSO } from './login';
 
 /**
  * Mở một "tab trình duyệt" riêng cho từng vai (context riêng, session riêng), giống kịch bản demo
@@ -17,7 +17,7 @@ export async function veTrangChu(page: Page) {
   for (let lan = 0; lan < 3; lan++) {
     await page.goto('dashboard');
     await page.waitForLoadState('networkidle', { timeout: 60_000 }).catch(() => {});
-    if (/sso/.test(page.url())) return; // hết phiên → nơi gọi đăng nhập lại
+    if (laTrangDangNhap(page.url())) return; // hết phiên → nơi gọi đăng nhập lại
     if (!(await page.getByText('Không tìm thấy trang').isVisible().catch(() => false))) return;
     await page.waitForTimeout(2_000);
   }
@@ -37,10 +37,11 @@ export async function moTrangVai(browser: Browser, testInfo: TestInfo, vai: Vai)
     storageState: fs.existsSync(file) ? file : undefined,
   });
   context.setDefaultTimeout(use.actionTimeout || 30_000);
+  await boMocThaoTacCu(context);
   const page = await context.newPage();
   await ghiNhanToast(page);
   await veTrangChu(page);
-  if (/\/sso\//.test(page.url()) || /sso\.toaan\.gov\.vn/.test(page.url())) {
+  if (laTrangDangNhap(page.url())) {
     await loginSSO(page, cred.user, { pass: cred.pass });
     fs.mkdirSync(path.dirname(file), { recursive: true });
     await context.storageState({ path: file });

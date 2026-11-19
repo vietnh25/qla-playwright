@@ -8,7 +8,8 @@ import path from 'path';
 import { VAI_TKM, VaiTKM, authFileVaiTKM, credentialsVaiTKM } from '../account';
 import { taiKhoan } from './cau-hinh-luong';
 import { ghiNhanToast } from './antd';
-import { loginSSO } from './login';
+import { boMocThaoTacCu, laTrangDangNhap, loginSSO } from './login';
+import { khungMenu } from './menu';
 import { veTrangChu } from './vai';
 
 /**
@@ -47,10 +48,11 @@ export async function moTrangVaiTKM(browser: Browser, testInfo: TestInfo, vai: V
   });
   context.setDefaultTimeout(use.actionTimeout || 30_000);
   await anTroLyAo(context);
+  await boMocThaoTacCu(context);
   const page = await context.newPage();
   await ghiNhanToast(page);
   await veTrangChu(page);
-  if (/\/sso\//.test(page.url()) || /sso\.toaan\.gov\.vn/.test(page.url())) {
+  if (laTrangDangNhap(page.url())) {
     await loginSSO(page, cred.user, { pass: cred.pass });
     fs.mkdirSync(path.dirname(file), { recursive: true });
     await context.storageState({ path: file });
@@ -97,11 +99,12 @@ export async function moTrangVaiCauHinh(browser: Browser, testInfo: TestInfo, va
   });
   context.setDefaultTimeout(use.actionTimeout || 30_000);
   await anTroLyAo(context);
+  await boMocThaoTacCu(context);
   const page = await context.newPage();
   await ghiNhanToast(page);
   await veTrangChu(page);
-  if (page.url().includes('/sso/') || page.url().includes('sso.toaan.gov.vn')) {
-    await loginSSO(page, tk.cccd, { pass: tk.matKhau });
+  if (laTrangDangNhap(page.url())) {
+    await loginSSO(page, tk.cccd, { pass: tk.matKhau, cachDangNhap: tk.dangNhap });
     fs.mkdirSync(path.dirname(file), { recursive: true });
     await context.storageState({ path: file });
   }
@@ -122,25 +125,60 @@ export async function moTrangVaiCauHinh(browser: Browser, testInfo: TestInfo, va
  * bước báo thiếu quyền.)
  */
 export async function chonNguCanhLamViec(page: Page, vai = ''): Promise<void> {
+  /**
+   * Tiêu đề hộp đổi theo bản FE: cũ "Chọn (đơn vị và) vai trò làm việc", mới "Xác nhận thông tin làm việc"
+   * (qla-webapp 7343a69204 · components/WorkContextSelector/index.tsx; đo STG 09/11/2026, TK thư ký KV5 Bắc Ninh).
+   */
   const hop = page
     .locator('.ant-modal')
-    .filter({ hasText: /Chọn (đơn vị và )?vai trò làm việc/ })
+    .filter({ hasText: /Chọn (đơn vị và )?vai trò làm việc|Xác nhận thông tin làm việc/ })
     .first();
-  if (!(await hop.isVisible({ timeout: 5_000 }).catch(() => false))) return;
+  // isVisible() KHÔNG chờ: hộp hiện sau khi app gọi xong danh sách ngữ cảnh → chờ MENU hoặc HỘP, cái nào tới trước
+  const toi = await Promise.race([
+    hop.waitFor({ state: 'visible', timeout: 30_000 }).then(() => 'hop' as const),
+    khungMenu(page).waitFor({ state: 'visible', timeout: 30_000 }).then(() => 'menu' as const),
+  ]).catch(() => 'khong' as const);
+  if (toi !== 'hop') return;
 
-  const dsO = hop.locator('[role="combobox"]');
+  let chonVaiTro: string | undefined;
+  try {
+    chonVaiTro = vai ? taiKhoan(vai).chonVaiTro : undefined;
+  } catch {
+    chonVaiTro = undefined;
+  }
+
+  // Ô đang khoá (tòa đã chọn sẵn vì chỉ có một tòa) thì bỏ qua
+  const dsO = hop.locator('.ant-select:not(.ant-select-disabled) [role="combobox"]');
   const daChon: string[] = [];
-  for (let i = 0; i < (await dsO.count()); i++) {
-    const o = dsO.nth(i);
-    await o.click().catch(() => undefined);
-    const muc = page.locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden) .ant-select-item-option').first();
-    if (await muc.isVisible({ timeout: 5_000 }).catch(() => false)) {
-      daChon.push((await muc.innerText().catch(() => '')).replace(/\s+/g, ' ').trim().slice(0, 60));
-      await muc.click().catch(() => undefined);
+  const soO = await dsO.count();
+  for (let i = 0; i < soO; i++) {
+    const laOVaiTro = i === soO - 1; // ô cuối luôn là vai trò (FE: tòa trước, vai trò sau)
+    await dsO.nth(i).click().catch(() => undefined);
+    const dsMuc = page.locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden) .ant-select-item-option');
+    await dsMuc.first().waitFor({ state: 'visible', timeout: 5_000 }).catch(() => undefined);
+    const nhan = (await dsMuc.allInnerTexts()).map(t => t.replace(/\s+/g, ' ').trim());
+    let idx = 0;
+    if (laOVaiTro && chonVaiTro) {
+      idx = nhan.findIndex(t => t.toLowerCase().includes(chonVaiTro!.toLowerCase()));
+      if (idx < 0) {
+        throw new Error(
+          `Hộp "${(await hop.locator('.ant-modal-title, h4').first().innerText().catch(() => ''))}" không có vai trò ` +
+            `"${chonVaiTro}" (config chonVaiTro của vai ${vai}). Vai trò đang có: ${nhan.join(' | ') || '(trống)'}`,
+        );
+      }
+    }
+    if (nhan.length) {
+      daChon.push(nhan[idx].slice(0, 60));
+      await dsMuc.nth(idx).click().catch(() => undefined);
     }
     await page.waitForTimeout(400);
   }
   await hop.getByRole('button', { name: /Tiếp tục/ }).first().click().catch(() => undefined);
-  await hop.waitFor({ state: 'hidden', timeout: 20_000 }).catch(() => undefined);
-  console.log(`    · ngữ cảnh làm việc${vai ? ` (${vai})` : ''}: ${daChon.join(' / ') || '(không đọc được)'}`);
+  if (!(await hop.waitFor({ state: 'hidden', timeout: 20_000 }).then(() => true).catch(() => false))) {
+    throw new Error(
+      `Hộp chọn ngữ cảnh làm việc vẫn mở sau khi bấm "Tiếp tục" (vai ${vai || '?'}, đã chọn: ${daChon.join(' / ') || 'không ô nào'}). ` +
+        `Khai "chonVaiTro" cho vai này trong config/tai-khoan*.local.json.`,
+    );
+  }
+  console.log(`    · ngữ cảnh làm việc${vai ? ` (${vai})` : ''}: ${daChon.join(' / ') || '(tòa, vai trò chọn sẵn)'}`);
 }

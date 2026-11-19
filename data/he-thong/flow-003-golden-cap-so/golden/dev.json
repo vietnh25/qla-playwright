@@ -1,0 +1,102 @@
+{
+  "moiTruong": "dev",
+  "ghiLuc": "2026-11-09T07:20:28.940Z",
+  "ketQua": {
+    "TL-KV5-HNGD-ST": {
+      "ketQua": "DA_CHON",
+      "maSo": "HT-D01.121.05-4455D81D",
+      "tenDay": "Dãy số chung",
+      "mauSo": "{so}/2026",
+      "soSoKhop": 1,
+      "toaDaCoSo": true
+    },
+    "TL-KV5-HNGD-ST-XEM": {
+      "ketQua": "DA_CHON",
+      "maSo": "HT-D01.121.05-4455D81D",
+      "tenDay": "Dãy số chung",
+      "mauSo": "{so}/2026",
+      "soSoKhop": 1,
+      "toaDaCoSo": true
+    },
+    "TL-KV5-PHA-SAN-ST": {
+      "ketQua": "DA_CHON",
+      "maSo": "HT-D01.121.05-A40FD1F3",
+      "tenDay": "Dãy số chung",
+      "mauSo": "{so}/2026",
+      "soSoKhop": 1,
+      "toaDaCoSo": true
+    },
+    "TL-KV5-HS-ST": {
+      "ketQua": "DA_CHON",
+      "maSo": "TL-HS-ST-MAU-DEV",
+      "tenDay": null,
+      "mauSo": "{so}/2026/TLST",
+      "soSoKhop": 1,
+      "toaDaCoSo": false
+    },
+    "TL-KV5-DS-ST": {
+      "ketQua": "CHUA_CO_SO",
+      "maSo": null,
+      "tenDay": null,
+      "mauSo": null,
+      "soSoKhop": 0,
+      "toaDaCoSo": false
+    },
+    "TL-TC-GDT-HS-DON": {
+      "ketQua": "DA_CHON",
+      "maSo": "HT-D01-A288C066",
+      "tenDay": null,
+      "mauSo": "{so}/2026",
+      "soSoKhop": 1,
+      "toaDaCoSo": false
+    },
+    "VB-KV5-03HC": {
+      "ketQua": "DA_CHON",
+      "maSo": "HT-D01.121.05-6B45763F",
+      "tenDay": "Dãy số chung",
+      "mauSo": "{so}/2026",
+      "soSoKhop": 2,
+      "toaDaCoSo": true
+    },
+    "VB-KV5-03HC-GIU": {
+      "ketQua": "DA_CHON",
+      "maSo": "HT-D01.121.05-6B45763F",
+      "tenDay": "Dãy số chung",
+      "mauSo": "{so}/2026",
+      "soSoKhop": 2,
+      "toaDaCoSo": true
+    },
+    "VB-KV5-47DS": {
+      "ketQua": "DA_CHON",
+      "maSo": "VB-MAU-DEV",
+      "tenDay": null,
+      "mauSo": "{so}/2026",
+      "soSoKhop": 1,
+      "toaDaCoSo": false
+    },
+    "VB-KV5-47DS-KDTM": {
+      "ketQua": "DA_CHON",
+      "maSo": "VB-MAU-DEV",
+      "tenDay": null,
+      "mauSo": "{so}/2026",
+      "soSoKhop": 1,
+      "toaDaCoSo": false
+    },
+    "VB-TC-47DS": {
+      "ketQua": "DA_CHON",
+      "maSo": "HT-D01-29CF5977",
+      "tenDay": null,
+      "mauSo": "{so}/2026",
+      "soSoKhop": 2,
+      "toaDaCoSo": false
+    },
+    "VB-KV5-KHONG-CO-SO": {
+      "ketQua": "DA_CHON",
+      "maSo": "VB-MAU-DEV",
+      "tenDay": null,
+      "mauSo": "{so}/2026",
+      "soSoKhop": 1,
+      "toaDaCoSo": false
+    }
+  }
+}

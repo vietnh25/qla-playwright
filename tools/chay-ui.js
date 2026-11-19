@@ -95,6 +95,8 @@ if (lay('so-case')) env.QLA_SO_CASE = lay('so-case');
  */
 if (lay('vu-an-thuc')) env.QLA_VU_AN_THUC = lay('vu-an-thuc');
 if (args.includes('--bo-qua-da-xong')) env.QLA_BO_QUA_DA_XONG = '1';
+// --golden-ghi: ghi lại baseline golden sổ cấp số (flow-003-golden-cap-so) — sau đó phải duyệt tay
+if (args.includes('--golden-ghi')) env.QLA_GOLDEN_GHI = '1';
 // --bo-qua-ocr (spec e2e-gdt-1410): môi trường không có màn OCR thì ghi BLOCKED và đi tiếp thay vì FAIL dừng
 if (args.includes('--bo-qua-ocr')) env.QLA_1410_BO_QUA_OCR = '1';
 // --hien: mở trình duyệt thật để thao tác/quan sát (dùng với spec mo-tay có page.pause())

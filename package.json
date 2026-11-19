@@ -65,13 +65,24 @@
     "ds:lao-dong:ui": "node tools/chay-ui.js stg --ghi --tiep --case=case-bacb-030 --file=flow-001-st-pt",
     "all:ui": "node tools/chay-ui.js stg --ghi",
     "don:do-chuoi-duyet": "node tools/chay-ui.js preprod --cli --file=do-chuoi-duyet-preprod",
-    "preprod:ui:lam-lai": "node tools/chay-ui.js preprod --ghi --file=flow-002-gdt-tt-nhap-data"
+    "preprod:ui:lam-lai": "node tools/chay-ui.js preprod --ghi --file=flow-002-gdt-tt-nhap-data",
+    "cap-so:stg": "node tools/chay-ui.js stg --ghi --cli --file=flow-001-cap-so-tu-dong",
+    "cap-so:stg:headed": "node tools/chay-ui.js stg --ghi --cli --hien --file=flow-001-cap-so-tu-dong",
+    "cap-so:stg:ui": "node tools/chay-ui.js stg --ghi --file=flow-001-cap-so-tu-dong",
+    "so-cap-so-v2:dev": "node tools/chay-ui.js dev --ghi --cli --file=flow-002-so-cap-so-v2-smoke",
+    "so-cap-so-v2:dev:headed": "node tools/chay-ui.js dev --ghi --cli --hien --file=flow-002-so-cap-so-v2-smoke",
+    "so-cap-so-v2:ui": "node tools/chay-ui.js dev --ghi --file=flow-002-so-cap-so-v2-smoke",
+    "golden-cap-so:dev": "node tools/chay-ui.js dev --ghi --cli --file=flow-003-golden-cap-so",
+    "golden-cap-so:dev:ghi": "node tools/chay-ui.js dev --ghi --cli --golden-ghi --file=flow-003-golden-cap-so",
+    "golden-cap-so:ui": "node tools/chay-ui.js dev --ghi --file=flow-003-golden-cap-so",
+    "so-cho:dev": "node tools/chay-ui.js dev --ghi --cli --file=flow-004-so-cho",
+    "so-cho:ui": "node tools/chay-ui.js dev --ghi --file=flow-004-so-cho"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "^1.64.0",
     "@types/node": "^22.20.3",
     "dotenv": "^17.4.2"
   }

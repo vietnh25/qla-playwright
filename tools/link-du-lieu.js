@@ -51,7 +51,8 @@ const phien = () => {
   await page.goto(`${QLA}/dashboard`);
   await page.waitForLoadState('networkidle', { timeout: 60_000 }).catch(() => {});
   await page.waitForTimeout(4_000);
-  if (page.url().includes('/sso/')) {
+  // Trang đăng nhập cũ /qla/sso/login, mới /qla/login (xem common/login.ts LA_SSO_LOCAL)
+  if (/\/sso\/|\/qla\/login(\?|$|\/)/.test(page.url())) {
     console.log(`Phiên ${env} đã hết hạn → npm run ${env === 'dev' ? 'dev' : 'staging'} -- --project=setup-tai-khoan-moi`);
     await browser.close();
     process.exit(1);

@@ -10,6 +10,7 @@
 import { Page, expect, test } from '@playwright/test';
 import { choHetSpin, chonNgay, chonSelect, chonSelectTheoThuTu, go, nghi } from '../../../common/antd';
 import { ddmmyyyy } from '../../../common/du-lieu';
+import { soTatDinh } from '../../../khung/so-tat-dinh';
 import { chonQhplThongKe, khungSelectCua, themNguoiThamGia } from '../../../common/don-khoi-kien';
 import type { INPUT } from '../../../data/kinh-doanh-thuong-mai/flow-001-st-pt-gdt-bao-cao/case-001/input';
 
@@ -23,7 +24,21 @@ export async function taoDonKhoiKien(page: Page, input: DuLieuVao, ghi: GhiChu) 
     await page.waitForLoadState('networkidle', { timeout: 60_000 }).catch(() => {});
     await choHetSpin(page);
     await page.getByRole('button', { name: /Thêm mới đơn$/ }).first().click();
-    await expect(page.getByText(/Thêm mới đơn khởi kiện và yêu cầu/i).first()).toBeVisible({ timeout: 60_000 });
+    /**
+     * STG từ 05/11/2026: nút "Thêm mới đơn" KHÔNG mở form ngay mà bật hộp "Thêm mới đơn" với hai thẻ
+     * "Nhập đơn" (nhập theo từng bước) và "Từ tệp OCR" (ảnh lỗi bước 05 cùng ngày). Luồng này nhập
+     * tay → chọn "Nhập đơn". Môi trường chưa có hộp chọn thì form mở thẳng như cũ — chờ cái nào tới trước.
+     */
+    const tieuDeForm = page.getByText(/Thêm mới đơn khởi kiện và yêu cầu/i).first();
+    const hopChon = page.locator('.ant-modal:visible').filter({ hasText: /Từ tệp OCR/ }).first();
+    await expect(tieuDeForm.or(hopChon), 'Bấm "Thêm mới đơn" nhưng không mở form cũng không mở hộp chọn cách nhập').toBeVisible({
+      timeout: 30_000,
+    });
+    if (await hopChon.isVisible()) {
+      await hopChon.getByText(/^Nhập đơn$/).first().click();
+      ghi('cách nhập đơn', 'hộp "Thêm mới đơn" → Nhập đơn (không dùng OCR)');
+    }
+    await expect(tieuDeForm).toBeVisible({ timeout: 60_000 });
     await choHetSpin(page);
     await nghi(page, 1200, 2000);
   });
@@ -35,9 +50,23 @@ export async function taoDonKhoiKien(page: Page, input: DuLieuVao, ghi: GhiChu) 
     await chonSelect(page, page.locator('#hinhThucNhanDon'), input.hinhThucNhanDon, { goDeLoc: false });
     await chonNgay(page.locator('#ngayLamDon'), homNay);
     await chonNgay(page.locator('#ngayNhanDon'), homNay);
-    // "Số tiếp nhận" hệ thống tự cấp và khoá → chỉ đọc lại làm bằng chứng
-    soTiepNhan = (await page.locator('#soTiepNhan').inputValue().catch(() => '')).trim();
-    ghi('số tiếp nhận (hệ thống cấp)', soTiepNhan || '(trống)');
+    /**
+     * "Số tiếp nhận": trước đây hệ thống tự cấp và khoá ô, nên test chỉ đọc lại. STG 05/11/2026 để ô
+     * TRỐNG, cho sửa và BẮT BUỘC ("Vui lòng nhập số tiếp nhận"); không điền thì "Tiếp theo" bị chặn
+     * ở bước 1. Hệ thống đã cấp thì giữ nguyên; trống thì điền số TẤT ĐỊNH (khung/so-tat-dinh.ts),
+     * hạt giống = case + nguyên đơn (riêng mỗi case, kể cả case dùng lại input của luồng khác) + ngày.
+     */
+    const oSoTiepNhan = page.locator('#soTiepNhan');
+    soTiepNhan = (await oSoTiepNhan.inputValue().catch(() => '')).trim();
+    if (soTiepNhan) {
+      ghi('số tiếp nhận (hệ thống cấp)', soTiepNhan);
+    } else if (await oSoTiepNhan.isEditable().catch(() => false)) {
+      soTiepNhan = soTatDinh(`${input.rootCaseKey}|${input.nguyenDon.hoTen}|${homNay}`, 'soTiepNhan', 6);
+      await oSoTiepNhan.fill(soTiepNhan);
+      ghi('số tiếp nhận (tự điền, ô bắt buộc)', soTiepNhan);
+    } else {
+      ghi('số tiếp nhận', '(trống, ô bị khoá)');
+    }
 
     // "Người nhận đơn" là danh mục CÁN BỘ CỦA ĐƠN VỊ đang đăng nhập. StepData b4.5 ghi
     // "Nguyễn Mậu Trường" nhưng chạy bằng tài khoản TANDTC thì danh mục là cán bộ TANDTC

@@ -1,0 +1,102 @@
+{
+  "moiTruong": "stg",
+  "ghiLuc": "2026-11-09T11:37:41.114Z",
+  "ketQua": {
+    "TL-KV5-HNGD-ST": {
+      "ketQua": "CHUA_CO_SO",
+      "maSo": null,
+      "tenDay": null,
+      "mauSo": null,
+      "soSoKhop": 0,
+      "toaDaCoSo": false
+    },
+    "TL-KV5-HNGD-ST-XEM": {
+      "ketQua": "CHUA_CO_SO",
+      "maSo": null,
+      "tenDay": null,
+      "mauSo": null,
+      "soSoKhop": 0,
+      "toaDaCoSo": false
+    },
+    "TL-KV5-PHA-SAN-ST": {
+      "ketQua": "CHUA_CO_SO",
+      "maSo": null,
+      "tenDay": null,
+      "mauSo": null,
+      "soSoKhop": 0,
+      "toaDaCoSo": false
+    },
+    "TL-KV5-HS-ST": {
+      "ketQua": "CHUA_CO_SO",
+      "maSo": null,
+      "tenDay": null,
+      "mauSo": null,
+      "soSoKhop": 0,
+      "toaDaCoSo": false
+    },
+    "TL-KV5-DS-ST": {
+      "ketQua": "CHUA_CO_SO",
+      "maSo": null,
+      "tenDay": null,
+      "mauSo": null,
+      "soSoKhop": 0,
+      "toaDaCoSo": false
+    },
+    "TL-TC-GDT-HS-DON": {
+      "ketQua": "DA_CHON",
+      "maSo": "HT-D01-766B103A",
+      "tenDay": null,
+      "mauSo": "{so}/2026",
+      "soSoKhop": 1,
+      "toaDaCoSo": false
+    },
+    "VB-KV5-03HC": {
+      "ketQua": "DA_CHON",
+      "maSo": "HT-D01.121.05-6B45763F",
+      "tenDay": "Dãy số chung",
+      "mauSo": "{so}/2026",
+      "soSoKhop": 1,
+      "toaDaCoSo": true
+    },
+    "VB-KV5-03HC-GIU": {
+      "ketQua": "DA_CHON",
+      "maSo": "HT-D01.121.05-6B45763F",
+      "tenDay": "Dãy số chung",
+      "mauSo": "{so}/2026",
+      "soSoKhop": 1,
+      "toaDaCoSo": true
+    },
+    "VB-KV5-47DS": {
+      "ketQua": "CHUA_CO_SO",
+      "maSo": null,
+      "tenDay": null,
+      "mauSo": null,
+      "soSoKhop": 0,
+      "toaDaCoSo": false
+    },
+    "VB-KV5-47DS-KDTM": {
+      "ketQua": "CHUA_CO_SO",
+      "maSo": null,
+      "tenDay": null,
+      "mauSo": null,
+      "soSoKhop": 0,
+      "toaDaCoSo": false
+    },
+    "VB-TC-47DS": {
+      "ketQua": "DA_CHON",
+      "maSo": "HT-D01-29CF5977",
+      "tenDay": null,
+      "mauSo": "{so}/2026",
+      "soSoKhop": 1,
+      "toaDaCoSo": false
+    },
+    "VB-KV5-KHONG-CO-SO": {
+      "ketQua": "CHUA_CO_SO",
+      "maSo": null,
+      "tenDay": null,
+      "mauSo": null,
+      "soSoKhop": 0,
+      "toaDaCoSo": false
+    }
+  }
+}

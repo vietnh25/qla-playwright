@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { nghi } from './antd';
 import { veTrangChu } from './vai';
+import { laTrangDangNhap } from './login';
 
 /** Thoát ký tự đặc biệt để ghép vào RegExp */
 const thoat = (s: string) => s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
@@ -95,6 +96,14 @@ export async function moMenu(page: Page, duong: string[]) {
     if (await moRong.isVisible().catch(() => false)) await moRong.click();
     else await veTrangChu(page);
     menu = khungMenu(page);
+  }
+  // Đang ở trang đăng nhập thì menu không bao giờ hiện → báo ngay, không chờ 60 s (R11)
+  if (laTrangDangNhap(page.url())) {
+    throw new Error(
+      `Phiên đã bị đăng xuất giữa chừng (đang ở trang đăng nhập ${page.url()}), không phải lỗi selector. ` +
+        `Thường do app tự đăng xuất (hết hạn / không thao tác 30 phút — xem boMocThaoTacCu trong common/login.ts). ` +
+        `Chạy lại bước để mở phiên mới.`,
+    );
   }
   await expect(menu, 'Không thấy menu bên trái (cả MenuV3 "Menu chính" và .ant-layout-sider)').toBeVisible({
     timeout: 60_000,

@@ -95,6 +95,8 @@ if (lay('so-case')) env.QLA_SO_CASE = lay('so-case');
  */
 if (lay('vu-an-thuc')) env.QLA_VU_AN_THUC = lay('vu-an-thuc');
 if (args.includes('--bo-qua-da-xong')) env.QLA_BO_QUA_DA_XONG = '1';
+// --golden-ghi: ghi lại baseline golden sổ cấp số (flow-003-golden-cap-so) — sau đó phải duyệt tay
+if (args.includes('--golden-ghi')) env.QLA_GOLDEN_GHI = '1';
 // --hien: mở trình duyệt thật để thao tác/quan sát (dùng với spec mo-tay có page.pause())
 if (args.includes('--hien')) env.QLA_MO_TAY = '1';
 // --anh: chụp .png cỡ thật 1920×1080 SAU MỖI BƯỚC, đặt tên theo mã bước (xem khung/luong.ts)

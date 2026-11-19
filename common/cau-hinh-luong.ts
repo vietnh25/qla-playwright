@@ -18,6 +18,13 @@ export interface TaiKhoanCauHinh {
   vaiTro?: string;
   /** Bỏ trống → Ta@<cccd> */
   matKhau?: string;
+  /** "form" = đăng nhập bằng form riêng của /qla/login (mật khẩu QLA); bỏ trống = SSO (common/login.ts) */
+  dangNhap?: "sso" | "form";
+  /**
+   * Vai trò cần chọn trong hộp "Xác nhận thông tin làm việc" khi tài khoản có nhiều vai trò ở tòa đó
+   * (khớp một phần nhãn, không phân biệt hoa thường). Bỏ trống → chọn mục đầu.
+   */
+  chonVaiTro?: string;
 }
 
 export interface CauHinhLuong {
@@ -109,7 +116,7 @@ export function taiKhoan(vai: string): TaiKhoanCauHinh {
     throw new Error(`Thiếu tài khoản cho vai "${vai}": khai trong config/tai-khoan.local.json hoặc biến ${bien || 'QLA_TKM_*'}`);
   }
   const matKhau = (bien && process.env[`${bien.replace(/_USER$/, '')}_PASS`]) || tu?.matKhau || `Ta@${cccd}`;
-  return { cccd, ten: tu?.ten || '', vaiTro: tu?.vaiTro, matKhau };
+  return { cccd, ten: tu?.ten || '', vaiTro: tu?.vaiTro, matKhau, dangNhap: tu?.dangNhap, chonVaiTro: tu?.chonVaiTro };
 }
 
 /** Các vai khai trong cấu hình (dùng để đăng nhập sẵn) */

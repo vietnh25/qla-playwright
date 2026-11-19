@@ -34,7 +34,7 @@ const args = process.argv.slice(2);
  * — nghĩa là gõ `preprod` (hay gõ sai tên) thì **ÂM THẦM CHẠY STAGING** mà vẫn in "Môi trường: STG",
  * nên người chạy tưởng đang ở pre-prod. Giờ tên lạ là DỪNG.
  */
-const HO_SO_THEO_MOI_TRUONG = { stg: 'staging', staging: 'staging', dev: 'dev', uat: 'uat', preprod: 'preprod' };
+const HO_SO_THEO_MOI_TRUONG = { stg: 'staging', staging: 'staging', dev: 'dev', uat: 'uat', preprod: 'preprod', daotao: 'daotao' };
 const tenMoiTruong = args.find(a => !a.startsWith('--')) || 'stg';
 if (!HO_SO_THEO_MOI_TRUONG[tenMoiTruong]) {
   console.error(
@@ -97,6 +97,8 @@ if (lay('vu-an-thuc')) env.QLA_VU_AN_THUC = lay('vu-an-thuc');
 if (args.includes('--bo-qua-da-xong')) env.QLA_BO_QUA_DA_XONG = '1';
 // --golden-ghi: ghi lại baseline golden sổ cấp số (flow-003-golden-cap-so) — sau đó phải duyệt tay
 if (args.includes('--golden-ghi')) env.QLA_GOLDEN_GHI = '1';
+// --bo-qua-ocr (spec e2e-gdt-1410): môi trường không có màn OCR thì ghi BLOCKED và đi tiếp thay vì FAIL dừng
+if (args.includes('--bo-qua-ocr')) env.QLA_1410_BO_QUA_OCR = '1';
 // --hien: mở trình duyệt thật để thao tác/quan sát (dùng với spec mo-tay có page.pause())
 if (args.includes('--hien')) env.QLA_MO_TAY = '1';
 // --anh: chụp .png cỡ thật 1920×1080 SAU MỖI BƯỚC, đặt tên theo mã bước (xem khung/luong.ts)
